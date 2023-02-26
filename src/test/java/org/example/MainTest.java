@@ -1,20 +1,28 @@
 package org.example;
 
-import static java.lang.System.currentTimeMillis;
-
-import com.codeborne.selenide.*;
-import com.codeborne.selenide.ex.ElementNotFound;
+import com.codeborne.selenide.CheckResult;
+import com.codeborne.selenide.Condition;
+import com.codeborne.selenide.Configuration;
+import com.codeborne.selenide.Driver;
+import com.codeborne.selenide.ElementsCollection;
+import com.codeborne.selenide.Selenide;
+import com.codeborne.selenide.SelenideElement;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
-import java.time.Duration;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
-import static com.codeborne.selenide.CollectionCondition.sizeGreaterThan;
-import static com.codeborne.selenide.Condition.*;
+import static com.codeborne.selenide.Condition.exactOwnText;
+import static com.codeborne.selenide.Condition.exist;
+import static com.codeborne.selenide.Condition.matchText;
+import static com.codeborne.selenide.Condition.ownText;
+import static com.codeborne.selenide.Condition.visible;
+import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
 import static com.codeborne.selenide.Selenide.element;
-import static com.codeborne.selenide.WebDriverRunner.getWebDriver;
+import static java.lang.System.currentTimeMillis;
 
 /**
  * Created with IntelliJ IDEA.
@@ -22,10 +30,11 @@ import static com.codeborne.selenide.WebDriverRunner.getWebDriver;
  * Date: 2/25/2023
  * Time: 10:15 PM
  */
+@ParametersAreNonnullByDefault
 public class MainTest {
 
     @Test
-    public void verifySubscriptionItemsForOrder() throws Exception {
+    public void verifySubscriptionItemsForOrder() {
         Configuration.pageLoadTimeout = 50000;
         Selenide.open("http://127.0.0.1:8080/my_account4/My%20Account.html");
 
@@ -74,15 +83,10 @@ public class MainTest {
     public static Condition childExactText(By childBy, String text_) {
         return new Condition("childExactText") {
             @Override
+            @Nonnull
             public CheckResult check(Driver driver, WebElement node) {
-                String childText = null;
-                try {
-                    childText = element(node).find(childBy).getOwnText().trim();
+                String childText = element(node).find(childBy).getOwnText().trim();
 //                    childText=node.findElement(childBy).getText().trim();
-                } catch (ElementNotFound e) {
-                }
-                if (childText == null)
-                    return new CheckResult(false, "the exception NoSuchElementException is occurred.");
                 return new CheckResult(childText.equals(text_), childText);
             }
         };
@@ -91,15 +95,9 @@ public class MainTest {
     public static Condition childAttributeValue(By childBy, String key, String value) {
         return new Condition("childAttributeValue") {
             @Override
+            @Nonnull
             public CheckResult check(Driver driver, WebElement node) {
-                String childText = null;
-                try {
-//                    childText=element(node).find(childBy).getAttribute(key).trim();
-                    childText = node.findElement(childBy).getAttribute(key).trim();
-                } catch (ElementNotFound e) {
-                }
-                if (childText == null)
-                    return new CheckResult(false, "the exception NoSuchElementException is occurred.");
+                String childText = node.findElement(childBy).getAttribute(key).trim();
                 return new CheckResult(childText.equals(value), childText);
             }
         };
