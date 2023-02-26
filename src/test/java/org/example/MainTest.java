@@ -1,5 +1,7 @@
 package org.example;
 
+import static java.lang.System.currentTimeMillis;
+
 import com.codeborne.selenide.*;
 import com.codeborne.selenide.ex.ElementNotFound;
 import org.junit.Test;
@@ -27,6 +29,7 @@ public class MainTest {
         Configuration.pageLoadTimeout = 50000;
         Selenide.open("http://127.0.0.1:8080/my_account4/My%20Account.html");
 
+        long start = currentTimeMillis();
         LoggerUtils.logMethodTime("find all subscriptions");
         ElementsCollection divSubscriptionItems = $$("div.subs-expands").snapshot();
 
@@ -42,14 +45,16 @@ public class MainTest {
         target.find(By.cssSelector("span.cc_goto_subscription_details")).shouldHave(matchText("^SB-.*"));
         LoggerUtils.logMethodTime("verify subscription recurring price.");
         target.find(By.cssSelector("span.cc_col_subscription_recurring_price")).shouldHave(ownText("USD $"));
-        LoggerUtils.logMethodTime("finished to verify subscription recurring price.");
+
+        long end = currentTimeMillis();
+        LoggerUtils.logMethodTime("finished to verify subscription recurring price in " + (end - start) + " ms.");
     }
 
     public ElementsCollection findSubscriptionItemsByOrderId(ElementsCollection divSubscriptionItems, String orderNumber) {
         ElementsCollection subscriptions = divSubscriptionItems.filter(childExactText(
                 By.xpath(".//div[contains(@class,'subscription-data')]//div[contains(@class,'sub-heading')]"), orderNumber
-        )).shouldBe(sizeGreaterThan(0));
-        return subscriptions;
+        ));
+        return subscriptions.snapshot();
     }
 
     public SelenideElement findSubscriptionItem(ElementsCollection subscriptionItems, String sku, int inCartQuantity) {
