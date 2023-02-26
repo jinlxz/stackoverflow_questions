@@ -26,9 +26,13 @@ public class MainTest {
     public void verifySubscriptionItemsForOrder() throws Exception {
         Configuration.pageLoadTimeout = 50000;
         Selenide.open("http://127.0.0.1:8080/my_account4/My%20Account.html");
+
+        LoggerUtils.logMethodTime("find all subscriptions");
+        ElementsCollection divSubscriptionItems = $$("div.subs-expands").snapshot();
+
         LoggerUtils.logMethodTime("find all subscriptions related to the order");
         //find the subscription items for an order in subscription list, basically it retrieve all subscription items and filter by order id.
-        ElementsCollection subscriptions = this.findSubscriptionItemsByOrderId("O-0000017865");
+        ElementsCollection subscriptions = findSubscriptionItemsByOrderId(divSubscriptionItems, "O-0000017865");
         LoggerUtils.logMethodTime("find the subscription related to the product");
         //find the subscription for the product SIMATIEDL, it uses the method `ElementCollection.filter()` to find the target subscription.
         SelenideElement target = this.findSubscriptionItem(subscriptions, "SIMATIEDL", 1);
@@ -41,9 +45,7 @@ public class MainTest {
         LoggerUtils.logMethodTime("finished to verify subscription recurring price.");
     }
 
-    private ElementsCollection divSubscriptionItems = $$("div.subs-expands");
-
-    public ElementsCollection findSubscriptionItemsByOrderId(String orderNumber) {
+    public ElementsCollection findSubscriptionItemsByOrderId(ElementsCollection divSubscriptionItems, String orderNumber) {
         ElementsCollection subscriptions = divSubscriptionItems.filter(childExactText(
                 By.xpath(".//div[contains(@class,'subscription-data')]//div[contains(@class,'sub-heading')]"), orderNumber
         )).shouldBe(sizeGreaterThan(0));
