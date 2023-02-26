@@ -51,11 +51,16 @@ public class MainTest {
     }
 
     public SelenideElement findSubscriptionItem(ElementsCollection subscriptionItems, String sku, int inCartQuantity) {
-        SelenideElement target = subscriptionItems.filter(childAttributeValue(By.cssSelector("span.cc_col_subscription_prod_name a"), "data-id", sku))
+        SelenideElement rawTarget = subscriptionItems.filter(childAttributeValue(By.cssSelector("span.cc_col_subscription_prod_name a"), "data-id", sku))
                 .find(childExactText(By.cssSelector("div.subscription-data div.cc_col_subscription_status"), String.valueOf(inCartQuantity)))
-                .shouldBe(exist);
+                .should(exist);
+
+        // TODO We could introduce method like $.cached() or $.freeze() in Selenide
+        SelenideElement target = $(rawTarget.getWrappedElement());
+
         LoggerUtils.logMethodTime("the target subscription item is found in the list.");
         target.scrollIntoView(true).shouldBe(visible);
+        LoggerUtils.logMethodTime("the target subscription item is scrolled into view");
         return target;
     }
 
