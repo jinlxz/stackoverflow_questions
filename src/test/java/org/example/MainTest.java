@@ -65,15 +65,10 @@ public class MainTest {
             @Override
             public CheckResult check(Driver driver, WebElement node) {
                 String childText = null;
-                Duration timeout = driver.getWebDriver().manage().timeouts().getImplicitWaitTimeout();
                 try {
-
-                    driver.getWebDriver().manage().timeouts().implicitlyWait(Duration.ZERO);
                     childText = element(node).find(childBy).getOwnText().trim();
 //                    childText=node.findElement(childBy).getText().trim();
                 } catch (ElementNotFound e) {
-                } finally {
-                    driver.getWebDriver().manage().timeouts().implicitlyWait(timeout);
                 }
                 if (childText == null)
                     return new CheckResult(false, "the exception NoSuchElementException is occurred.");
@@ -87,14 +82,10 @@ public class MainTest {
             @Override
             public CheckResult check(Driver driver, WebElement node) {
                 String childText = null;
-                Duration timeout = driver.getWebDriver().manage().timeouts().getImplicitWaitTimeout();
                 try {
-                    driver.getWebDriver().manage().timeouts().implicitlyWait(Duration.ZERO);
 //                    childText=element(node).find(childBy).getAttribute(key).trim();
                     childText = node.findElement(childBy).getAttribute(key).trim();
                 } catch (ElementNotFound e) {
-                } finally {
-                    driver.getWebDriver().manage().timeouts().implicitlyWait(timeout);
                 }
                 if (childText == null)
                     return new CheckResult(false, "the exception NoSuchElementException is occurred.");
