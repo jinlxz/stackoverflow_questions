@@ -7,6 +7,8 @@ import com.codeborne.selenide.Driver;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
+import com.codeborne.selenide.junit.TextReport;
+import org.junit.Rule;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -32,6 +34,8 @@ import static java.lang.System.currentTimeMillis;
  */
 @ParametersAreNonnullByDefault
 public class MainTest {
+
+    @Rule public TextReport report = new TextReport();
 
     @Test
     public void verifySubscriptionItemsForOrder() {
