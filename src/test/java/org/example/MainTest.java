@@ -26,7 +26,6 @@ public class MainTest {
     public void verifySubscriptionItemsForOrder() throws Exception {
         Configuration.pageLoadTimeout = 50000;
         Selenide.open("http://127.0.0.1:8080/my_account4/My%20Account.html");
-        getWebDriver().manage().window().maximize();
         LoggerUtils.logMethodTime("find all subscriptions related to the order");
         //find the subscription items for an order in subscription list, basically it retrieve all subscription items and filter by order id.
         ElementsCollection subscriptions = this.findSubscriptionItemsByOrderId("O-0000017865");
