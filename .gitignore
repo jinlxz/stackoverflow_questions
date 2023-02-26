@@ -1,0 +1,19 @@
+.gradle/
+.settings
+bin
+build
+# reports
+.project
+.classpath
+# utaf/
+.idea
+download/
+!download/.gitkeep
+debug.log
+report.html
+reports
+*.png
+__pycache__
+.env
+!src/test/resources/testdata/tcs/product_onboarding/images/*.png
+video/

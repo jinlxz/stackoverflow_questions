@@ -1,0 +1,143 @@
+//
+// Theme driven uiProperties overrides.  If you want to override elements
+// of uiProperties within this file then
+// 1) Uncomment the code between //OVERRIDES START HERE and
+//                               //OVERRIDES END HERE
+// 2) Define the specific property(ies) that you wish to
+//    override from the managed package.
+//
+// Note that you must override according to the full object path
+// but you can only override specific values, i.e. you do not need
+// to provide the whole object copy.
+//
+// OVERRIDES START HERE
+// CCRZ.uiProperties = $.extend(true,CCRZ.uiProperties,{
+//     //Overriden partial objects here
+// });
+// OVERRIDES END HERE
+
+
+
+/*PLP Handlebars*/
+Handlebars.registerHelper('limitText', function(desc,num) {
+    if(desc){
+        var limitStr = desc.slice(0,num);
+        if (desc.length > num) {
+            limitStr = limitStr + '...';
+        }
+        return limitStr;
+    }
+});
+
+Handlebars.registerHelper('halfYearlyPrice', function(price) {
+    var ceilPrice = formatPrice(Math.ceil(price/6));
+    return ceilPrice;
+});
+Handlebars.registerHelper('limitdesc', function(desc) {
+    if(desc){
+        var limitStr = desc.slice(0,160);
+        if (desc.length > 160) {
+            limitStr = limitStr + '...';
+        }
+        return limitStr;
+    }
+});
+Handlebars.registerHelper('limittitle', function(desc) {
+    var limitStr1 = desc.slice(0,38);
+    if (desc.length > 38) {
+        limitStr1 = limitStr1 + '...';
+    }
+    return limitStr1;
+});
+Handlebars.registerHelper('quarterlyPrice', function(price) {
+    var ceilPrice = formatPrice(Math.ceil(price));
+    return ceilPrice;
+});       
+Handlebars.registerHelper('monthlyPrice', function(price) {
+    var ceilPrice = formatPrice(Math.ceil(price/12));
+    return ceilPrice;
+});                                      
+Handlebars.registerHelper('displayImage', function(obj, styleClass, options) {
+    if (options && options.hash['src']) {
+        var imgSrc = _.escape(options.hash['src']);
+    } else {
+        var imgSrc = CCRZ.processImageURL(obj, styleClass, options);
+    }
+    var alt = "";
+    if (options && options.hash['alt'])
+        alt = _.escape(options.hash['alt']);
+    var dataId = "";
+    if (options && options.hash['dataId'])
+        dataId = _.escape(options.hash['dataId']);
+    if (imgSrc.length > 0)
+        return new Handlebars.SafeString("<img class='" + styleClass + "' src='" + imgSrc + "' alt='" + alt + "' data-id='" + dataId + "' title='" + alt + "' />");
+    else
+        return new Handlebars.SafeString("<img class='" + styleClass + " " + CCRZ.pagevars.userLocale + " noImg' alt='" + alt + "' data-id='" + dataId + "' title='" + alt + "' />");
+});
+
+
+/*PDP Handlebars*/
+Handlebars.registerHelper('displayPDF',function(obj,val){
+    var pdfUrl = '';
+    if(obj){
+        if(obj[val]){
+            pdfUrl = obj[val][0].uri;
+        }
+    }
+    return pdfUrl;
+});
+Handlebars.registerHelper("sliceProd", function (data) {
+    var prodSize = data.slice(-1);
+    return prodSize;
+});
+
+Handlebars.registerHelper('price', function(amount, currency, options) {
+	if(CCRZ.pagevars.currencyData.currencyName =="INR"){
+		if (!_.isNull(amount) && !_.isUndefined(amount)) {
+				return new Handlebars.SafeString(fixedFormatPrice(Math.ceil(amount)));
+		} else {
+			var undefinedMsg = CCRZ.pagevars.pageLabels['price_undefined'];
+			if (_.isNull(undefinedMsg) || _.isUndefined(undefinedMsg)) {
+				undefinedMsg = '&nbsp;';
+			}
+			return new Handlebars.SafeString(undefinedMsg);
+		}
+	}	
+	else{
+		if (!_.isNull(amount) && !_.isUndefined(amount)) {
+			if (_.isUndefined(options)) {
+				return new Handlebars.SafeString(formatPrice(amount, false));
+			} else {
+				return new Handlebars.SafeString(formatPrice(amount, currency));
+			}
+		} else {
+			var undefinedMsg = CCRZ.pagevars.pageLabels['price_undefined'];
+			if (_.isNull(undefinedMsg) || _.isUndefined(undefinedMsg)) {
+				undefinedMsg = '&nbsp;';
+			}
+			return new Handlebars.SafeString(undefinedMsg);
+		}
+	}
+});
+Handlebars.registerHelper('sum', function() {
+    var sum = 0, v;
+    var currency = false;
+    if (arguments) {
+        var argsLen = arguments.length;
+        if (isNaN(parseFloat(arguments[argsLen - 2]))) {
+            currency = arguments[argsLen - 2];
+            argsLen -= 2;
+        }
+        for (var i = 0; i < argsLen; i++) {
+            v = parseFloat(arguments[i]);
+            if (!isNaN(v))
+                sum += v;
+        }
+    }
+    if(CCRZ.pagevars.currencyData.currencyName =="INR"){
+        return new Handlebars.SafeString(fixedFormatPrice(sum));
+    }
+    else{
+        return new Handlebars.SafeString(formatPrice(sum, currency));
+    }
+});
